@@ -4,19 +4,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ageev.tasklist.backend.entity.Stat;
-import ru.ageev.tasklist.backend.repository.StatRepository;
+import ru.ageev.tasklist.backend.service.StatService;
 
 @RestController
 public class StatController {
-    private final StatRepository statRepository;
+
+    private final StatService statService;
+
+    public StatController(StatService statService) {
+        this.statService = statService;
+    }
+
     private final Long defaultId = 1l;
+
 
     @GetMapping("/stat")
     public ResponseEntity<Stat> findById() {
-        return ResponseEntity.ok(statRepository.findById(defaultId).get());
+
+        return  ResponseEntity.ok(statService.findById(defaultId));
     }
 
-    public StatController(StatRepository statRepository) {
-        this.statRepository = statRepository;
-    }
+
 }

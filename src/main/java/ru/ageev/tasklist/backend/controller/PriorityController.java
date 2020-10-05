@@ -4,83 +4,107 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ageev.tasklist.backend.entity.Category;
 import ru.ageev.tasklist.backend.entity.Priority;
-import ru.ageev.tasklist.backend.repository.PriorityRepository;
-import ru.ageev.tasklist.backend.search.CategorySearchValues;
+import ru.ageev.tasklist.backend.search.PrioritySearchValues;
+import ru.ageev.tasklist.backend.service.PriorityService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/priority")
+@RequestMapping ("/priority")
 public class PriorityController {
-    final
-    PriorityRepository priorityRepository;
 
-    public PriorityController(PriorityRepository priorityRepository) {
-        this.priorityRepository = priorityRepository;
+    private PriorityService priorityService;
+
+    public PriorityController(PriorityService priorityService) {
+        this.priorityService = priorityService;
     }
 
-    @GetMapping("/test")
-    public List<Priority> test(){
-        List<Priority> priorityList = priorityRepository.findAll();
-        return priorityList;
+
+    @GetMapping("/all")
+    public List<Priority> findAll() {
+
+
+
+        return priorityService.findAll();
+
     }
+
+
 
     @PostMapping("/add")
     public ResponseEntity<Priority> add(@RequestBody Priority priority){
-        if (priority.getId() != null && priority.getId()!= 0)
-            return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
-        if (priority.getTitle() == null && priority.getTitle().trim().length() == 0)
-            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
-        if (priority.getColor() == null || priority.getColor().trim().length() == 0)
-            return new ResponseEntity("missed param: color", HttpStatus.NOT_ACCEPTABLE);
-        return ResponseEntity.ok(priorityRepository.save(priority));
 
-    }
-    @PutMapping("/update")
-    public ResponseEntity<Priority> update(@RequestBody Priority priority){
-        if (priority.getId() == null || priority.getId()== 0)
+        if (priority.getId() != null && priority.getId() != 0) {
             return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
-        if (priority.getTitle() == null || priority.getTitle().trim().length() == 0)
-            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
-        if (priority.getColor() == null || priority.getColor().trim().length() == 0)
-            return new ResponseEntity("missed param: color", HttpStatus.NOT_ACCEPTABLE);
-
-        return ResponseEntity.ok(priorityRepository.save(priority));
-    }
-    
-    @GetMapping("/id/{id}")
-    public ResponseEntity<Priority> findById(@PathVariable Long id){
-        Priority priority = null;
-        try {
-            priority = priorityRepository.findById(id).get();
-        }catch (NoSuchElementException e ){
-            e.printStackTrace();
-            return new ResponseEntity("id = "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
-        return ResponseEntity.ok(priority);
+        if (priority.getTitle() == null || priority.getTitle().trim().length() == 0) {
+            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (priority.getColor() == null || priority.getColor().trim().length() == 0) {
+            return new ResponseEntity("missed param: color", HttpStatus.NOT_ACCEPTABLE);
+        }
+        return ResponseEntity.ok(priorityService.add(priority));
     }
+
+
+    @PutMapping("/update")
+    public ResponseEntity update(@RequestBody Priority priority){
+
+        if (priority.getId() == null || priority.getId() == 0) {
+            return new ResponseEntity("missed param: id", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (priority.getTitle() == null || priority.getTitle().trim().length() == 0) {
+            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (priority.getColor() == null || priority.getColor().trim().length() == 0) {
+            return new ResponseEntity("missed param: color", HttpStatus.NOT_ACCEPTABLE);
+        }
+        priorityService.update(priority);
+
+
+        return new ResponseEntity(HttpStatus.OK);
+
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Priority> findById(@PathVariable Long id) {
+
+
+
+        Priority priority = null;
+        try{
+            priority = priorityService.findById(id);
+        }catch (NoSuchElementException e){
+            e.printStackTrace();
+            return new ResponseEntity("id="+id+" not found", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return  ResponseEntity.ok(priority);
+    }
+
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteById(@PathVariable Long id){
+    public ResponseEntity delete(@PathVariable Long id) {
+
         try {
-             priorityRepository.deleteById(id);
-        }catch (EmptyResultDataAccessException e ){
+            priorityService.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
             e.printStackTrace();
-            return new ResponseEntity("id = "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity("id="+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
-        return ResponseEntity.ok(HttpStatus.OK);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public List<Priority
-            > findAll(){
-        return priorityRepository.findAllByOrderByIdAsc();
-    }
+
     @PostMapping("/search")
-    public ResponseEntity<List<Priority>> search(@RequestBody CategorySearchValues searchValues){
-        return ResponseEntity.ok(priorityRepository.findByTitle(searchValues.getText()));
+    public ResponseEntity<List<Priority>> search(@RequestBody PrioritySearchValues prioritySearchValues){
+
+        return ResponseEntity.ok(priorityService.findByTitle(prioritySearchValues.getText()));
     }
+
+
+
 }

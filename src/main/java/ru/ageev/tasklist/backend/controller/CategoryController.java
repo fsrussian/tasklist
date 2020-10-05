@@ -8,78 +8,96 @@ import ru.ageev.tasklist.backend.entity.Category;
 import ru.ageev.tasklist.backend.entity.Priority;
 import ru.ageev.tasklist.backend.repository.CategoryRepository;
 import ru.ageev.tasklist.backend.search.CategorySearchValues;
+import ru.ageev.tasklist.backend.service.CategoryService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping ("/category")
 public class CategoryController {
-    final
-    CategoryRepository categoryRepository;
 
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    private CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
-    @GetMapping("/test")
-    public List<Category> test(){
-        List<Category> priorityList = categoryRepository.findAll();
-        return priorityList;
+
+    @GetMapping("/all")
+    public List<Category> findAll() {
+
+        return categoryService.findAllByOrderByTitleAsc();
     }
+
 
     @PostMapping("/add")
     public ResponseEntity<Category> add(@RequestBody Category category){
-        if (category.getId() != null && category.getId()!= 0)
-            return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
-        if (category.getTitle() == null && category.getTitle().trim().length() == 0)
-            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
-        return ResponseEntity.ok(categoryRepository.save(category));
 
+
+        if (category.getId() != null && category.getId() != 0) {
+            return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
+            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+
+        return ResponseEntity.ok(categoryService.add(category));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Category> update(@RequestBody Category category){
-        if (category.getId() == null || category.getId()== 0)
-            return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
-        if (category.getTitle() == null || category.getTitle().trim().length() == 0)
-            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
-        return ResponseEntity.ok(categoryRepository.save(category));
-    }
+    public ResponseEntity update(@RequestBody Category category){
 
+        if (category.getId() == null || category.getId() == 0) {
+            return new ResponseEntity("missed param: id", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
+            return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
+        }
+        categoryService.update(category);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<Category> findById(@PathVariable Long id){
-        Category category  = null;
-        try {
-            category = categoryRepository.findById(id).get();
-        }catch (NoSuchElementException e ){
+    public ResponseEntity<Category> findById(@PathVariable Long id) {
+
+
+
+        Category category = null;
+        try{
+            category = categoryService.findById(id);
+        }catch (NoSuchElementException e){
             e.printStackTrace();
-            return new ResponseEntity("id = "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity("id="+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
-        return ResponseEntity.ok(category);
+
+        return  ResponseEntity.ok(category);
     }
+
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteById(@PathVariable Long id){
-        try {
-            categoryRepository.deleteById(id);
-        }catch (EmptyResultDataAccessException e ){
-            e.printStackTrace();
-            return new ResponseEntity("id = "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
-        }
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
+    public ResponseEntity delete(@PathVariable Long id) {
 
-    @GetMapping("/all")
-    public List<Category> findAll(){
-        return categoryRepository.findAllByOrderByTitleAsc();
+        try {
+            categoryService.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+            e.printStackTrace();
+            return new ResponseEntity("id="+id+" not found", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues searchValues){
-        return ResponseEntity.ok(categoryRepository.findByTitle(searchValues.getText()));
-    }
-}
+    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues){
 
+        return ResponseEntity.ok(categoryService.findByTitle(categorySearchValues.getText()));
+    }
+
+
+
+
+}
