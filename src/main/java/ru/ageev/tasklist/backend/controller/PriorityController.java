@@ -4,8 +4,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ageev.tasklist.backend.entity.Category;
 import ru.ageev.tasklist.backend.entity.Priority;
 import ru.ageev.tasklist.backend.repository.PriorityRepository;
+import ru.ageev.tasklist.backend.search.CategorySearchValues;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -70,5 +72,15 @@ public class PriorityController {
             return new ResponseEntity("id = "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public List<Priority
+            > findAll(){
+        return priorityRepository.findAllByOrderByIdAsc();
+    }
+    @PostMapping("/search")
+    public ResponseEntity<List<Priority>> search(@RequestBody CategorySearchValues searchValues){
+        return ResponseEntity.ok(priorityRepository.findByTitle(searchValues.getText()));
     }
 }

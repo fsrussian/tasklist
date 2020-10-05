@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ageev.tasklist.backend.entity.Category;
 import ru.ageev.tasklist.backend.entity.Priority;
 import ru.ageev.tasklist.backend.repository.CategoryRepository;
+import ru.ageev.tasklist.backend.search.CategorySearchValues;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -68,6 +69,16 @@ public class CategoryController {
             return new ResponseEntity("id = "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public List<Category> findAll(){
+        return categoryRepository.findAllByOrderByTitleAsc();
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues searchValues){
+        return ResponseEntity.ok(categoryRepository.findByTitle(searchValues.getText()));
     }
 }
 
