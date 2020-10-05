@@ -48,6 +48,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryRepository.save(category));
     }
 
+
     @GetMapping("/id/{id}")
     public ResponseEntity<Category> findById(@PathVariable Long id){
         Category category  = null;
