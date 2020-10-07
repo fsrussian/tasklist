@@ -16,5 +16,6 @@ public interface PriorityRepository extends JpaRepository<Priority, Long> {
     @Query("SELECT c FROM Priority c where " +
             "(:title is null or :title='' or lower(c.title) like lower(concat('%', :title,'%')))  " +
             "order by c.title asc")
+    
     List<Priority> findByTitle(@Param("title") String title);
 }
