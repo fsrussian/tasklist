@@ -1,4 +1,4 @@
-package ru.ageev.tasklist.backend.service;
+package ru.ageev.tasklist.backend.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

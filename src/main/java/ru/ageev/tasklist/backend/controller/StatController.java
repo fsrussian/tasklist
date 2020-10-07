@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ageev.tasklist.backend.entity.Stat;
-import ru.ageev.tasklist.backend.service.StatService;
+import ru.ageev.tasklist.backend.service.impl.StatService;
 
 @RestController
 public class StatController {

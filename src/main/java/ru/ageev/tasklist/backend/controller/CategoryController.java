@@ -5,10 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ageev.tasklist.backend.entity.Category;
-import ru.ageev.tasklist.backend.entity.Priority;
-import ru.ageev.tasklist.backend.repository.CategoryRepository;
 import ru.ageev.tasklist.backend.search.CategorySearchValues;
-import ru.ageev.tasklist.backend.service.CategoryService;
+import ru.ageev.tasklist.backend.service.impl.CategoryService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

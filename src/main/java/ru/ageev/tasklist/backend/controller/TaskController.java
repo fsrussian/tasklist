@@ -6,10 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.ageev.tasklist.backend.entity.Task;
 import ru.ageev.tasklist.backend.search.TaskSearchValues;
-import ru.ageev.tasklist.backend.service.TaskService;
+import ru.ageev.tasklist.backend.security.jwt.JwtUser;
+import ru.ageev.tasklist.backend.service.impl.TaskService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -27,7 +29,10 @@ public class TaskController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<Task>> findAll() {
+    public ResponseEntity<List<Task>> findAll(@AuthenticationPrincipal JwtUser user) {
+        System.out.println("__________________________________________________________________");
+        System.out.println(user.getLastname());
+        System.out.println("__________________________________________________________________");
 
 
         return ResponseEntity.ok(taskService.findAll());

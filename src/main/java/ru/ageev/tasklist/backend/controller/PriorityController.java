@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ageev.tasklist.backend.entity.Priority;
 import ru.ageev.tasklist.backend.search.PrioritySearchValues;
-import ru.ageev.tasklist.backend.service.PriorityService;
+import ru.ageev.tasklist.backend.service.impl.PriorityService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
