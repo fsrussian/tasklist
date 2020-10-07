@@ -30,10 +30,6 @@ public class TaskController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Task>> findAll(@AuthenticationPrincipal JwtUser user) {
-        System.out.println("__________________________________________________________________");
-        System.out.println(user.getLastname());
-        System.out.println("__________________________________________________________________");
-
 
         return ResponseEntity.ok(taskService.findAll());
     }
