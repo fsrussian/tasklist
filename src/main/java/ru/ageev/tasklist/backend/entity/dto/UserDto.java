@@ -1,4 +1,4 @@
-package ru.ageev.tasklist.backend.dto;
+package ru.ageev.tasklist.backend.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

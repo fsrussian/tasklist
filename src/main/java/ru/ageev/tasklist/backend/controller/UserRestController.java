@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ageev.tasklist.backend.dto.UserDto;
+import ru.ageev.tasklist.backend.entity.dto.UserDto;
 import ru.ageev.tasklist.backend.model.User;
 import ru.ageev.tasklist.backend.service.UserService;
 

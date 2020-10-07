@@ -1,4 +1,4 @@
-package ru.ageev.tasklist.backend.dto;
+package ru.ageev.tasklist.backend.entity.dto;
 
 import lombok.Data;
 
